@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Overview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='student/attendance_view.css') }}">
+</head>
+
+<body>
+
+    <!-- BACK BUTTON -->
+    <a class="back-btn" href="{{ url_for ('student_dashboard')}}">← Back</a>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header-box">
+            <h2>Attendance Overview</h2>
+
+            <!-- Week Navigation -->
+            <div class="week-nav">
+                <button onclick="changeWeek(-1)">⬅ Previous</button>
+
+                <div class="week-center">
+                    <h3 id="weekRange">{{ week_start }} to {{ week_end }}</h3>
+
+                    <button class="calendar-btn"onclick="document.getElementById('calendar').showPicker()">📅</button>
+                </div>
+                
+                <button onclick="changeWeek(1)">Next ➡</button>
+            </div>
+
+            <!-- Calendar Button -->
+            
+            <input type="date" id="calendar" style="visibility:hidden; width:0; height:0;">
+        </div>
+
+        <!-- TIMETABLE -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>1st Period</th>
+                    <th>2nd Period</th>
+                    <th>3rd Period</th>
+                    <th>4th Period</th>
+                    <th>5th Period</th>
+                    <th>6th Period</th>
+                    <th>7th Period</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceBody">
+            
+            </tbody>
+        </table>
+
+        
+        <p id="noDataMsg" class="no-data" style="display:none;">No attendance data available for this date.</p>
+
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let currentDate = new Date("{{ monday }}");
+
+        // Load current week initially
+        loadWeekAttendance(currentDate);
+
+        // WEEK CHANGE FUNCTION
+        function changeWeek(offset) {
+            currentDate.setDate(currentDate.getDate() + offset * 7);
+            loadWeekAttendance(currentDate);
+         }
+
+        // LOAD WEEK ATTENDANCE
+        function loadWeekAttendance(date) {
+            const start = new Date(date);
+            const day = start.getDay();
+            const diff = day === 0 ? -6 : 1 - day;
+            start.setDate(start.getDate() + diff);
+
+            const end = new Date(start);
+            end.setDate(start.getDate() + 4); // Friday
+
+            document.getElementById("weekRange").innerText =
+                `${format(start)} to ${format(end)}`;
+
+            fetch(`/student/get_week_attendance?date=${format(start)}`)
+                .then(res => res.json())
+                .then(data => renderAttendance(data));
+        }
+
+        // RENDER TABLE DATA
+        function renderAttendance(data) {
+            let tbody = document.getElementById("attendanceBody");
+            tbody.innerHTML = "";
+
+            if (!data || Object.keys(data).length === 0) {
+                document.getElementById("noDataMsg").style.display = "block";
+                return;
+            }
+
+            document.getElementById("noDataMsg").style.display = "none";
+
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+            days.forEach(day => {
+                let row = `<tr><td>${day}</td>`;
+
+                for (let i = 1; i <= 7; i++) {
+                    const cell = data[day]?.[i] || {status:"no-data", subject:""};
+
+                    row += `
+                    <td class="${cell.status}">
+                        <strong>${cell.subject}</strong><br>
+                    </td>`;
+
+                }
+
+                row += "</tr>";
+                tbody.innerHTML += row;
+            });
+        }
+
+        // DATE FORMATTER
+        function format(date) {
+            return date.toISOString().split("T")[0];
+        }
+
+        // CALENDAR PICKER
+        document.getElementById("calendar").addEventListener("change", function() {
+            const picked = new Date(this.value);
+
+            // Load selected week
+            loadWeekAttendance(picked);
+        });
+    </script>
+
+</body>
+</html>

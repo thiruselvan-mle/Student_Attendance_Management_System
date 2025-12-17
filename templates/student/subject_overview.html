@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subject Overview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='student/subject_overview.css') }}">
+</head>
+<body>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('student_dashboard') }}" class="back-btn">← Back</a>
+
+    <div class="container">
+
+        <h2>Subject Overview</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Subject</th>
+                        <th>Total Periods</th>
+                        <th>Total Present</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if overview %}
+                        {% for row in overview %}
+                        <tr>
+                            <td>{{ row.sno }}</td>
+                            <td>{{ row.subject }}</td>
+                            <td>{{ row.total_periods }}</td>
+                            <td>{{ row.total_present }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="no-data">
+                                No data available
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>
