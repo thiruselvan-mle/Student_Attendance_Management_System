@@ -1,1 +1,103 @@
-<h1>hello</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/dashboard.css') }}">
+</head>
+<body>
+    <div class="layout">
+
+        <aside class="sidebar">
+            <h2 class="logo">Teacher</h2>
+
+            <nav>
+                <a href="{{ url_for ('teacher.teacher_dashboard') }}" class="active">Dashboard</a>
+                <a href="{{url_for ('teacher.timetable') }}">Timetable</a>
+                <a href="{{url_for('teacher.attendance_report')}}">Attendance Report</a>
+                <a href="{{url_for('teacher.teacher_profile')}}">Profile</a>
+                <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="header">
+                <h2>Welcome, {{ teacher_name }}</h2>
+                <h3>Today: {{today_date}}-{{today}}</h3>
+                <h4>{{ department }} Department</h4>
+            </div>
+
+            <div class="cards">
+
+                <div class="card blue">
+                    <h3>Today Classes</h3>
+                    <p>{{ today_class }}</p>
+                </div>
+
+                <div class="card green">
+                    <h3>Attendance Marked</h3>
+                    <p>{{ marked_classes }}</p>
+                </div>
+
+                <div class="card red">
+                    <h3>Pending Classes</h3>
+                    <p>{{ pending_classes }}</p>
+                </div>
+
+            </div>
+        
+            <div class="today-attendance">
+
+                <h2>Today Schedule</h2>
+
+                <div class="period-grid">
+                    {% for p in today_periods %}
+                        {% if p.class in ['Free', 'Holiday'] %}
+                            <div class="period-card free">
+                                <p>{{ p.period_no }}</p>
+                                <p>{{p.class}}</p>
+                            </div>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('teacher.attendance_mark') }}">
+                                <input type="hidden" name="class_name" value="{{ p.class }}">
+                                <input type="hidden" name="department" value="{{ p.department }}">
+                                <input type="hidden" name="year" value="{{ p.year }}">
+                                <input type="hidden" name="semester" value="{{ p.semester }}">
+                                <input type="hidden" name="subject_name" value="{{ p.subject_name }}">
+                                <input type="hidden" name="period_no" value="{{ p.period_no }}">
+                                <input type="hidden" name="subject_code" value="{{ p.subject_code }}">
+                                <input type="hidden" name="teacher_id" value="{{ p.teacher_id }}">
+                                <button type="submit" class="period-card active">
+                                    <p>{{p.period_no}}</p>
+                                    <p>{{ p.subject_name }}</p>
+                                    <p>{{ p.class }} -{{p.year}}</p>
+                                </button>
+                            </form>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+    <script>
+        setTimeout(() => {
+            const alertBox = document.querySelector(".alert");
+            if (alertBox) alertBox.style.display = "none";
+        }, 3000);
+    </script>
+
+</body>
+</html>

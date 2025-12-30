@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+}
+
+.page {
+    max-width: 900px;
+    margin: auto;
+    padding: 15px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.back {
+    text-decoration: none;
+    font-size: 20px;
+    color: #2563eb;
+}
+
+.info h2 {
+    color: #0f172a;
+}
+
+.info p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* TABLE HEAD */
+.table-head,
+.row {
+    display: grid;
+    grid-template-columns: 60px 140px 1fr 100px;
+    align-items: center;
+    padding: 10px;
+}
+
+.table-head {
+    font-weight: bold;
+    border-bottom: 2px solid #e5e7eb;
+    color: rgb(7, 7, 67);
+}
+
+/* ROW */
+.row {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* STATUS BUTTON */
+.status-btn {
+    border: none;
+    width: 45px;
+    height: 35px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.present {
+    background: #16a34a;
+    color: white;
+}
+
+.absent {
+    background: #dc2626;
+    color: white;
+}
+
+/* FOOTER */
+.btn-group {
+    display: flex;
+    gap: 15px;          /* space between buttons */
+    align-items: center;
+    justify-content: center; 
+    margin-top: 30px;
+}
+
+.submit-btn,
+.edit-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .table-head,
+    .row {
+        grid-template-columns: 40px 90px 1fr 70px;
+        font-size: 14px;
+    }
+}

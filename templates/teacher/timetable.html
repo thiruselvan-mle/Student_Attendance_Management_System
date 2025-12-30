@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Timetable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/timetable.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR (SAME AS DASHBOARD) -->
+    <aside class="sidebar">
+        <h2 class="logo">Teacher</h2>
+
+        <nav>
+            <a href="{{ url_for('teacher.teacher_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('teacher.timetable') }}" class="active">Timetable</a>
+            <a href="{{ url_for('teacher.attendance_report')}}">Attendance Report</a>
+            <a href="{{url_for('teacher.teacher_profile')}}">Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <div class="header">
+            <h2>Weekly Timetable</h2>
+            <h4>{{ department }} Department</h4>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="timetable">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        {% for i in range(1,8) %}
+                            <th>P{{ i }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for day, periods in timetable.items() %}
+                    <tr>
+                        <td><b>{{ day }}</b></td>
+
+                        {% for p in periods %}
+                            {% if p.subject_name == 'Free' %}
+                                <td class="free">{{ p.subject_name }}</td>
+                            {% else %}
+                                <td class="active">
+                                    <p>{{ p.subject_name }}</p>
+                                    <p>{{ p.class_name }}-{{ p.year }} year</p>
+                                </td>
+
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>
+

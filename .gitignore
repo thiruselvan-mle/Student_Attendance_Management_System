@@ -1,11 +1,5 @@
-test.py
-
-test.html
-
 venv
 
-database.database
+test
 
-query.py
-
-README.md
+__pycache__

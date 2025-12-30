@@ -90,23 +90,13 @@ body {
     color: white;
 }
 
-.no-data {
-    margin-top: 20px;
-    font-size: 18px;
-    color: red;
-    text-align: center;
-}
 
 td.present {
     background: #28a745;
-    color: white;
-    font-weight: bold;
 }
 
 td.absent {
-    background: #dc3545;
-    color: white;
-    font-weight: bold;
+    background: red;
 }
 
 td.no-data {

@@ -1,0 +1,270 @@
+/* General Layout */
+.layout {
+    display: flex;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: #1e88e5;
+    color: #fff;
+    padding: 20px;
+}
+
+.sidebar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.sidebar nav a {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    margin: 12px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Main Content */
+.content {
+    flex: 1;
+    padding: 30px;
+}
+
+.header {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.header h2 {
+    margin-top: 7px;
+    color: #333;
+    margin-left: 5px;
+}
+
+.header h4{
+    color: rgb(100, 99, 99);
+    margin-left: 5px;
+    margin-bottom: 7px;
+}
+
+
+/* Dashboard Cards */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card p {
+    font-size: 15px;
+    color: #555;
+}
+
+.logout{
+    background-color: rgb(245, 66, 66);
+}
+
+/* Progress Bar */
+.progress-box {
+    width: 100%;
+    height: 22px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 30px;
+    
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #22c55e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+    transition: width 0.6s ease-in-out;
+}
+
+/* Today Classes Container */
+.today-classes {
+    margin-top: 30px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Grid Layout */
+.today-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Common card style */
+.period-card {
+    height: 90px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    transition: 0.3s ease;
+    text-align: center;
+    width: 100%;
+    border: none;
+    outline: none;
+}
+
+/* Active Class */
+.period-card.active {
+    background-color:#127bd6 ;
+    color: white;
+    text-decoration: none;
+}
+
+.period-card.active:hover {
+    transform: scale(1.05);
+}
+
+/* Free Period */
+.period-card.free {
+    background: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;   
+}
+
+.period-card {
+    outline: none;
+    border: none;
+}
+
+.period-card:focus,
+.period-card:active {
+    outline: none;
+    border: none;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert.success {
+    background: #e0f2fe;
+    color: #0369a1;
+    border-left: 5px solid #2563eb;
+}
+
+.alert.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left: 5px solid #dc2626;
+}
+
+
+/* ------------------ MOBILE RESPONSIVE ------------------ */
+@media (max-width: 768px) {
+
+    /* Sidebar → top bar */
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .sidebar nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .sidebar nav a {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+
+    /* Content spacing */
+    .content {
+        padding: 15px;
+    }
+
+    /* Dashboard cards → 1 column */
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    /* Today class grid */
+    .today-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Period card height smaller */
+    .period-card {
+        height: 80px;
+        font-size: 14px;
+    }
+}
+
+/* Extra small screens (very small phones) */
+@media (max-width: 480px) {
+    .today-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .period-card {
+        height: 70px;
+    }
+
+    .header h2 {
+        font-size: 18px;
+    }
+
+    .header h4 {
+        font-size: 14px;
+    }
+}

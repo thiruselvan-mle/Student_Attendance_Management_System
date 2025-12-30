@@ -10,7 +10,7 @@
 <body>
 
     <!-- BACK BUTTON -->
-    <a class="back-btn" href="{{ url_for ('student_dashboard')}}">← Back</a>
+    <a class="back-btn" href="{{ url_for('student.student_dashboard') }}">← Back</a>
 
     <div class="container">
 
@@ -24,16 +24,18 @@
 
                 <div class="week-center">
                     <h3 id="weekRange">{{ week_start }} to {{ week_end }}</h3>
-
-                    <button class="calendar-btn"onclick="document.getElementById('calendar').showPicker()">📅</button>
+                    <button class="calendar-btn"
+                        onclick="document.getElementById('calendar').showPicker()">📅</button>
                 </div>
-                
+
                 <button onclick="changeWeek(1)">Next ➡</button>
             </div>
 
-            <!-- Calendar Button -->
-            
-            <input type="date" id="calendar" style="visibility:hidden; width:0; height:0;">
+            <!-- Hidden Calendar -->
+            <input type="date" id="calendar"
+                   min="{{ sem_start }}"
+                   max="{{ sem_end }}"
+                   style="visibility:hidden;width:0;height:0;">
         </div>
 
         <!-- TIMETABLE -->
@@ -50,38 +52,50 @@
                     <th>7th Period</th>
                 </tr>
             </thead>
-            <tbody id="attendanceBody">
-            
-            </tbody>
+            <tbody id="attendanceBody"></tbody>
         </table>
 
-        
-        <p id="noDataMsg" class="no-data" style="display:none;">No attendance data available for this date.</p>
+        <p id="noDataMsg" class="no-data" style="display:none;">
+            No attendance data available for this date.
+        </p>
 
     </div>
 
-    <!-- JavaScript -->
+    <!-- ================= JS ================= -->
     <script>
+        const SEM_START = new Date("{{ sem_start }}");
+        const SEM_END   = new Date("{{ sem_end }}");
+
         let currentDate = new Date("{{ monday }}");
 
-        // Load current week initially
+        // INITIAL LOAD
         loadWeekAttendance(currentDate);
 
-        // WEEK CHANGE FUNCTION
+        // WEEK CHANGE
         function changeWeek(offset) {
-            currentDate.setDate(currentDate.getDate() + offset * 7);
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() + offset * 7);
+
+            if (!isWithinSemester(newDate)) {
+                alert("Only current semester attendance available");
+                return;
+            }
+
+            currentDate = newDate;
             loadWeekAttendance(currentDate);
-         }
+        }
 
-        // LOAD WEEK ATTENDANCE
+        // LOAD WEEK DATA
         function loadWeekAttendance(date) {
-            const start = new Date(date);
-            const day = start.getDay();
-            const diff = day === 0 ? -6 : 1 - day;
-            start.setDate(start.getDate() + diff);
 
+            if (!isWithinSemester(date)) {
+                alert("Only current semester attendance available");
+                return;
+            }
+
+            const start = getMonday(date);
             const end = new Date(start);
-            end.setDate(start.getDate() + 4); // Friday
+            end.setDate(start.getDate() + 4);
 
             document.getElementById("weekRange").innerText =
                 `${format(start)} to ${format(end)}`;
@@ -91,9 +105,10 @@
                 .then(data => renderAttendance(data));
         }
 
-        // RENDER TABLE DATA
+        // RENDER TABLE
+
         function renderAttendance(data) {
-            let tbody = document.getElementById("attendanceBody");
+            const tbody = document.getElementById("attendanceBody");
             tbody.innerHTML = "";
 
             if (!data || Object.keys(data).length === 0) {
@@ -109,13 +124,25 @@
                 let row = `<tr><td>${day}</td>`;
 
                 for (let i = 1; i <= 7; i++) {
-                    const cell = data[day]?.[i] || {status:"no-data", subject:""};
+                    const cell = data[day]?.[i] || { status: null, subject: "" };
+
+                    let cssClass = "no-data";
+
+                    if (cell.status) {
+                        const s = cell.status.toLowerCase();
+
+                        if (s === "present" || s === "p") {
+                            cssClass = "present";
+                        } 
+                        else if (s === "absent" || s === "a") {
+                            cssClass = "absent";
+                        }
+                    }
 
                     row += `
-                    <td class="${cell.status}">
-                        <strong>${cell.subject}</strong><br>
+                    <td class="${cssClass}">
+                        <strong>${cell.subject || "-"}</strong>
                     </td>`;
-
                 }
 
                 row += "</tr>";
@@ -123,18 +150,35 @@
             });
         }
 
-        // DATE FORMATTER
+        // CALENDAR PICK
+        document.getElementById("calendar").addEventListener("change", function () {
+            const picked = new Date(this.value);
+
+            if (!isWithinSemester(picked)) {
+                alert("Only current semester attendance available");
+                return;
+            }
+
+            currentDate = picked;
+            loadWeekAttendance(picked);
+        });
+
+        // HELPERS
+        function isWithinSemester(date) {
+            return date >= SEM_START && date <= SEM_END;
+        }
+
+        function getMonday(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = day === 0 ? -6 : 1 - day;
+            d.setDate(d.getDate() + diff);
+            return d;
+        }
+
         function format(date) {
             return date.toISOString().split("T")[0];
         }
-
-        // CALENDAR PICKER
-        document.getElementById("calendar").addEventListener("change", function() {
-            const picked = new Date(this.value);
-
-            // Load selected week
-            loadWeekAttendance(picked);
-        });
     </script>
 
 </body>

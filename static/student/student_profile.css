@@ -1,0 +1,126 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* MAIN CONTENT SAME AS DASHBOARD */
+.main {
+    margin-left: 250px;
+    padding: 20px;
+    width: 100%;
+    background: #f4f6f9;
+}
+
+/* =========================
+   TOP PROFILE STRIP
+   ========================= */
+.profile-top {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+/* ICON WITH COLOR BG */
+.profile-icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #003366, #0059b3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    color: white;
+    margin-right: 20px;
+}
+
+/* NAME + REG NO */
+.profile-basic h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+    color: #003366;
+}
+
+.profile-basic p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* =========================
+   DETAILS CARDS
+   ========================= */
+.profile-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* COMMON CARD */
+.profile-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* CARD TITLE */
+.profile-card h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #003366;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+/* DETAILS LIST */
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: bold;
+    color: #444;
+}
+
+.detail-value {
+    color: #666;
+}
+
+/* =========================
+   MOBILE VIEW
+   ========================= */
+@media (max-width: 768px) {
+
+    .main {
+        margin-left: 200px;
+    }
+
+    .profile-top {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-icon {
+        margin-bottom: 15px;
+        margin-right: 0;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+}

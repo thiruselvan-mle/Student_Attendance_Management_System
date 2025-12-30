@@ -1,0 +1,51 @@
+/* TABLE CONTAINER */
+.table-wrapper {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    overflow-x: auto;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+    border: 1px solid #d1d5db;
+}
+
+th, td {
+    border: 1px solid #d1d5db;
+    padding: 14px;
+    text-align: center;
+    font-size: 15px;
+}
+
+th {
+    background: #e5e7eb;
+    font-weight: 600;
+}
+
+/* ACTIVE CLASS */
+.active {
+    background: #e8f5e9;
+    color: #166534;
+    font-weight: 600;
+}
+
+/* FREE PERIOD */
+.free {
+    background: #f9fafb;
+    color: #000000;
+
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+    table {
+        min-width: 800px;
+    }
+}
+

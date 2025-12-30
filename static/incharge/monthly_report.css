@@ -1,0 +1,188 @@
+body {
+    background: #f2f4f8;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+
+.a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    margin: 20px auto;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+}
+
+/* HEADER */
+.report-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+.logo {
+    width: 50%;
+    margin-right: 20px;
+}
+
+
+.college-info p {
+    margin: 3px 0;
+    margin-left: 100px;
+    font-weight: 700;
+}
+
+/* INFO */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    font-weight: 600;
+}
+
+/* TABLE */
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: center;
+}
+
+.attendance-table th {
+    background: #f1f1f1;
+}
+
+/* STATUS COLORS */
+.good {
+    color: green;
+    font-weight: bold;
+}
+
+.warning {
+    color: orange;
+    font-weight: bold;
+}
+
+.danger {
+    color: red;
+    font-weight: bold;
+}
+
+/* FOOTER */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 60px;
+    font-weight: bold;
+}
+
+.top-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #2563eb;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.month-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.month-form select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.print-btn {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    
+}
+
+.print-btn:hover {
+    background-color: #1e40af;
+}
+
+@media print {
+    .top-box {
+        display: none !important;
+    }
+}
+
+
+@media print {
+
+    @page {
+        size: A4;
+        margin: 5mm;
+    }
+
+    body {
+        zoom: 0.8; /* 🔥 VERY IMPORTANT */
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar,
+    .filter-box,
+    .btn,
+    .no-print {
+        display: none !important;
+    }
+
+    .header {
+        margin-bottom: 5px;
+        padding: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+    }
+
+    th, td {
+        padding: 3px 4px;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+
+    .report-container {
+        page-break-inside: avoid;
+    }
+
+    /* Remove unwanted space */
+    * {
+        box-shadow: none !important;
+    }
+
+    td, th {
+    padding: 4px !important;
+    font-size: 11px;
+    }
+
+}
+

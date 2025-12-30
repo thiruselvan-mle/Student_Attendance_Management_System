@@ -14,12 +14,11 @@
     <div class="sidebar">
         <h2 class="logo-name">Student Panel</h2>
 
-        <a href="{{ url_for('student_dashboard') }}" class="active">Dashboard</a>
-        <a href="{{ url_for('student_attendance_overview') }}">Attendance Overview</a>
-        <a href="{{ url_for('subject_overview')}}">subject_overview</a>
-        <a >Profile</a>
-        <a >Settings</a>
-        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+        <a href="{{ url_for('student.student_dashboard') }}" class="active">Dashboard</a>
+        <a href="{{ url_for('student.student_attendance_overview') }}">Attendance Overview</a>
+        <a href="{{ url_for('student.student_subject_overview')}}">subject_overview</a>
+        <a href="{{ url_for('student.student_profile')}}">Profile</a>
+        <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
     </div>
 
 
@@ -57,8 +56,10 @@
 
         {% if today_status == 'present' %}
             <p class="status present">✔ Present</p>
-        {% else %}
+        {% elif today_status == 'absent'%}
             <p class="status absent">✘ Absent</p>
+        {%else%}
+            <p class="status no-data">No Data Updated Or Holiday</p>
         {% endif %}
     </div>
 

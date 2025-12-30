@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='incharge/monthly_report.css') }}">
+</head>
+<body>
+    <div class="top-box">
+        <a href="{{url_for('incharge.incharge_dashboard')}}" class="back-btn">← Back</a>
+
+        <form method="get" action="{{ url_for('incharge.monthly_report') }}" class="month-form">
+            <label><b>Select Month :</b></label>
+            <select name="month" onchange="this.form.submit()">
+                {% for m in range(1, 13) %}
+                    <option value="{{ m }}" {% if m == selected_month %}selected{% endif %}>
+                        {{ ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <button class="print-btn" onclick="window.print()">Download / Print</button>
+    </div>
+    <div class="a4-page">
+
+        <div class="report-header">
+            <img src="{{ url_for('static', filename='images/college_logo.png') }}" class="logo">
+            <div class="college-info">
+                <p>Department of {{ department }}</p>
+                <p>Report Month – {{ month }} / {{current_year}}</p>
+            </div>
+        </div>
+
+
+        <div class="info-row">
+            <div><b>Year / Semester:</b> {{ semester }} / {{ year }}</div>
+            <div><b>Total Working Days:</b> {{ total_days }}</div>
+            <div><b>Generated On:</b> {{ today }}</div>
+        </div>  
+
+
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Register No</th>
+                    <th>Student Name</th>
+                    <th>Percentage</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reg_no ,s in reports.items() %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ reg_no }}</td>
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.percentage }}%</td>
+
+                    {% if s.percentage >= 75 %}
+                        <td class="good">Good</td>
+                    {% elif s.percentage >= 60 %}
+                        <td class="warning">Warning</td>
+                    {% else %}
+                        <td class="danger">Low</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <p>Class Incharge Signature</p>
+            <p>Head of Department</p>
+            <p>Principal Signature</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

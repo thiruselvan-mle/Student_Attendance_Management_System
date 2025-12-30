@@ -98,6 +98,10 @@ body {
     color: red;
 }
 
+.status.no-data {
+    color: red;
+}
+
 .total-days {
     font-size: 55px;
     margin-top: 20px;

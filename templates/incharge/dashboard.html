@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incharge Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='incharge/dashboard.css') }}">
+</head>
+
+<body>
+    <div class="layout">
+
+    <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="logo">Incharge</h2>
+
+            <nav>
+                <a href="{{ url_for('incharge.incharge_dashboard') }}" class="active">Dashboard</a>
+                <a href="{{ url_for('incharge.incharge_timetable') }}">Timetable</a>
+                <a href="{{url_for('incharge.monthly_report')}}">Monthly Report</a>
+                <a href="{{url_for('incharge.incharge_profile')}}">Profile</a>
+                <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+            </nav>
+        </aside>
+
+    <!-- Main Content -->
+        <main class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="header">
+                <h2>Welcome, {{ incharge.name }}</h2>
+                <h4>{{incharge.department}} Department</h4>
+            </div>
+
+        <!-- Summary Cards -->
+            <div class="dashboard-cards">
+
+                <div class="card">
+                    <h3>Total Students</h3>
+                    <p>Boys: {{male}}</p>
+                    <p>Girls: {{female}}</p>
+                    <p>Total: {{ total_students }}</p>
+                </div>
+
+                <div class="card">
+                    <h3>Overall Attendance</h3>
+                    <div class="progress-box">
+                        <div class="progress-bar" style="width: {{ overall_percentage }}%">
+                            <span>{{ overall_percentage }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Your Class</h3>
+                    <p>Semester: {{ incharge.semester }}</p>
+                    <p>Class: {{ incharge.class_name }}</p>
+                    <p>Year: {{ incharge.year }}</p>
+                </div>
+            </div>
+
+            <div class="today-classes">
+                <h3>Today's Classess</h3>
+
+                <div class="today-grid">
+                    {% for p in today_periods %}
+                        {% if p.subject_name in ["Free", "Holiday"] %}
+                            <div class="period-card free">
+                                <p>{{ p.period_no }}</p>
+                                <p>{{p.subject_name}}</p>
+                            </div>
+                        {% else %}
+                            <form method="POST" action="{{ url_for('teacher.attendance_mark') }}">
+                                <input type="hidden" name="class_name" value="{{ p.class }}">
+                                <input type="hidden" name="department" value="{{ p.department }}">
+                                <input type="hidden" name="year" value="{{ p.year }}">
+                                <input type="hidden" name="semester" value="{{ p.semester }}">
+                                <input type="hidden" name="subject_name" value="{{ p.subject_name }}">
+                                <input type="hidden" name="period_no" value="{{ p.period_no }}">
+                                <input type="hidden" name="subject_code" value="{{ p.subject_code }}">
+                                <input type="hidden" name="teacher_id" value="{{ p.teacher_id }}">
+                                <button type="submit" class="period-card active">
+                                    <p>{{p.period_no}}</p>
+                                    <p>{{ p.subject_name }}</p>
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </main>
+
+    </div>
+        <script>
+            setTimeout(() => {
+                const alertBox = document.querySelector(".alert");
+                if (alertBox) alertBox.style.display = "none";
+            }, 3000);
+        </script>
+
+</body>
+</html>

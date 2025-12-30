@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/profile.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Teacher</h2>
+        <nav>
+            <a href="{{ url_for('teacher.teacher_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('teacher.timetable') }}">Timetable</a>
+            <a href="{{ url_for('teacher.attendance_report') }}">Attendance</a>
+            <a href="{{url_for('teacher.teacher_profile')}}" class="active">Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-icon">👨‍🏫</div>
+                <h2>{{ teacher.name }}</h2>
+                <p>{{ teacher.department }} Department</p>
+            </div>
+
+            <div class="profile-info">
+                <div><span>Teacher ID:</span> {{ teacher.teacher_id }}</div>
+                <div><span>Email:</span> {{ teacher.email }}</div>
+                <div><span>Phone:</span> {{ teacher.phone }}</div>
+                <div><span>Experience:</span> {{ teacher.experience }} years</div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>

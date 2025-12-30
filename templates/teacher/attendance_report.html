@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- reuse dashboard sidebar style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='teacher/attendance_report.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Teacher</h2>
+
+        <nav>
+            <a href="{{ url_for('teacher.teacher_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('teacher.timetable') }}">Timetable</a>
+            <a href="{{url_for('teacher.attendance_report')}}" class="active">Attendance Report</a>
+            <a href="{{url_for('teacher.teacher_profile')}}">Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <div class="header">
+            <h2>Attendance Report</h2>
+            <h4>{{ department }} {{ year }}-Year</h4>
+        </div>
+
+        <!-- FILTER -->
+        <form method="POST" action="{{ url_for('teacher.attendance_report')}}" class="filter-box">
+            <select name="semester" required>
+                <option value="">Select Semester</option>
+                {% for s in range(1,9) %}
+                    <option value="{{ s }}">Semester {{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="class_name" required>
+                <option value="">Select Class</option>
+                {% for c in classes %}
+                    <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Load Report</button>
+        </form>
+        
+        {% if reports %}
+            {% for subject_name, subjects in reports.items() %} 
+                {% for subject_code, students in subjects.items() %}
+                    <h3 class="subject-title">Subject: {{subject_code}} - {{subject_name}}</h3>       
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Register No</th>
+                                    <th>Name</th>
+                                    <th>Total Classes</th>
+                                    <th>Present</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set counter = namespace(value=1) %}
+                                {% for reg_no, student in students.items() %}
+                                    {% for name, data in student.items() %}
+                                        <tr>
+                                            <td>{{ counter.value }}</td>
+                                            <td>{{ reg_no }}</td>
+                                            <td>{{ name }}</td>
+                                            <td>{{ data.total_classes }}</td>
+                                            <td>{{ data.present }}</td>                    
+                                        </tr>
+                                        {% set counter.value = counter.value + 1 %}
+                                    {% endfor %}
+                                {%endfor%} 
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endfor %}
+            {% endfor %}
+        {% else %}
+            <h4 class="empty">Only Current Semester Data Available</h4>    
+        {% endif %}
+    </main>
+</div>
+
+</body>
+</html>

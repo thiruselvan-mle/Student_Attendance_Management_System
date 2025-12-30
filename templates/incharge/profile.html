@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incharge Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='incharge/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='incharge/profile.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Incharge</h2>
+        <nav>
+            <a href="{{ url_for('incharge.incharge_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('incharge.incharge_timetable') }}">Timetable</a>
+            <a href="{{url_for('incharge.monthly_report')}}">Monthly Report</a>
+            <a href="{{url_for('incharge.incharge_profile')}}" class="active">Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-icon">👨‍🏫</div>
+                <h2>{{ incharge.name }}</h2>
+                <p>{{ incharge.department }} Department</p>
+            </div>
+
+            <div class="profile-info">
+                <div><span>Incharge ID:</span> {{ incharge.incharge_id }}</div>
+                <div><span>Email:</span> {{ incharge.email }}</div>
+                <div><span>Phone:</span> {{ incharge.phone }}</div>
+                <div><span>Experience:</span> {{ incharge.experience }} years</div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>
