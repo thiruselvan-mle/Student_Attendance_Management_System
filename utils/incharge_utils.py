@@ -24,7 +24,7 @@ def calculate_percentage(attendance):
 def incharge_shedule(incharge_timetable):
     schedule = {}
     for r in incharge_timetable:
-        schedule[r['period_no']] = { "subject": r['subject_name'],"class_name": r['class_name'],"department": r['department'],"semester": r['semester'],"year":r['year'],"subject_code":r['subject_code'],"teacher_id":r['teacher_id'] }
+        schedule[r['period_no']] = { "subject": r['subject_name'],"department": r['department'],"semester": r['semester'],"year":r['year'],"subject_code":r['subject_code'],"teacher_id":r['teacher_id'] }
 
     return schedule
 
@@ -45,7 +45,6 @@ def today_incharge_periods(result):
                 "period_no": f"P:{period_no}",
                 "subject_name": row['subject'].upper(),
                 "teacher_id":row['teacher_id'],
-                "class": row['class_name'],
                 "year": row['year'],
                 "department": row['department'],
                 "semester": row['semester'],

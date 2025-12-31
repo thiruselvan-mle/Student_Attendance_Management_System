@@ -26,11 +26,10 @@ def incharge_dashboard():
     
     incharge_id = session['incharge_id']
     incharge = incharge_table(incharge_id)
-    class_name = incharge['class_name']
     semester = incharge['semester']
     department = incharge['department']
 
-    students = students_list(class_name, semester, department)
+    students = students_list(semester, department)
     register_no = [s['register_no'] for s in students]
     gender = [g['gender'] for g in students]
     total_count, male_count, female_count = count_students(register_no, gender)
@@ -39,7 +38,7 @@ def incharge_dashboard():
     today = date.today()
     day = today.strftime("%A")
 
-    incharge_timetable = load_cls_timetable(class_name, semester, department, day)
+    incharge_timetable = load_cls_timetable(semester, department, day)
     shedule = incharge_shedule(incharge_timetable)
     today_periods = today_incharge_periods(shedule)
 
@@ -60,18 +59,17 @@ def incharge_timetable():
     incharge_id = session['incharge_id']
     incharge = incharge_table(incharge_id)
     department = incharge['department']
-    class_name = incharge['class_name']
     semester = incharge['semester']
     year = incharge['year']
-    rows = incharege_timetable(class_name, semester, department)
+    rows = incharege_timetable(semester, department)
     timetable = load_incharge_timetable(rows)
 
 
     return render_template(
     'incharge/timetable.html',
     year = year,
-    class_name = class_name,
-    timetable =timetable
+    timetable =timetable,
+    department = department
     )
 
 @incharge.route("/monthly/report/")
@@ -82,11 +80,10 @@ def monthly_report():
     incharge_id = session['incharge_id']
     incharge = incharge_table(incharge_id)
     department = incharge['department']
-    class_name = incharge['class_name']
     semester = incharge['semester']
     year = incharge['year']
 
-    students = students_list(class_name, semester, department)
+    students = students_list(semester, department)
     rows = [s['register_no'] for s in students]
 
     today = date.today()
@@ -110,7 +107,8 @@ def monthly_report():
     today = today,
     reports = reports,
     total_days = total_days,
-    current_year = current_year
+    current_year = current_year,
+    selected_month =selected_month
     )
 
 

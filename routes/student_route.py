@@ -49,7 +49,6 @@ def student_dashboard():
         student_name=name,
         department=department,
         year=year,
-        class_name=class_name,
         present_percent=present_percent,
         absent_percent=absent_percent,
         total_days=result_total_days,
@@ -66,10 +65,9 @@ def get_week_attendance_api():
 
     department = result_student['department']
     year = result_student['year']
-    class_name = result_student['class_name']
     semester = result_student['semester']
 
-    result_timetable = get_timetable(department, year, class_name, semester)
+    result_timetable = get_timetable(department, year, semester)
     timetable = load_timetable(result_timetable)
 
     base_date = datetime.strptime(request.args.get('date'), "%Y-%m-%d")
@@ -118,10 +116,9 @@ def student_subject_overview():
 
     department = result_student['department']
     semester = result_student['semester']
-    class_name = result_student['class_name']
     year = result_student['year']
 
-    overview = get_subject_overview(register_no, department, semester, class_name , year, get_timetable, load_timetable, dashboard_attendance, get_subject_total_periods, get_subject_present_count)
+    overview = get_subject_overview(register_no, department, semester, year, get_timetable, load_timetable, dashboard_attendance, get_subject_total_periods, get_subject_present_count)
     
     return render_template(
         "student/subject_overview.html",

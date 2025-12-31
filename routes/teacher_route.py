@@ -62,7 +62,6 @@ def attendance_mark():
     subject_name = None
     period = None
     today = date.today()
-    class_name = None
     year = None
     department = None
     semester = None
@@ -87,7 +86,6 @@ def attendance_mark():
         back_url = url_for('auth.login')
 
     if request.method == 'POST':        
-        class_name = request.form['class_name']
         year = request.form['year']
         subject_name = request.form['subject_name']
         department = request.form['department']
@@ -95,7 +93,7 @@ def attendance_mark():
         semester = request.form['semester']
         subject_code = request.form['subject_code']
         teacher_id = request.form['teacher_id']
-        class_list = get_student_list(class_name, year, department, semester)
+        class_list = get_student_list(year, department, semester)
 
     return render_template(
         'teacher/attendance_mark.html',
@@ -108,7 +106,6 @@ def attendance_mark():
         semester = semester,
         department = department,
         year = year,
-        class_name =class_name,
         back_url = back_url,
         mark_btn = mark_btn,
         edit_btn = edit_btn
@@ -129,7 +126,6 @@ def attendance_submit():
         semester = request.form['semester']
         teacher_id = request.form.get('teacher_id')
         department = request.form['department']
-        class_name =request.form['class_name']
         submt_role = session['role']
         role = submt_role.lower()
         back_url = request.form.get('back_url')
@@ -150,7 +146,7 @@ def attendance_submit():
             return redirect(url_for('auth.login'))
 
         if action == 'submit':
-            if is_attendance_locked(attendance_date, period_no, department, semester, class_name, subject_code, teacher_id):
+            if is_attendance_locked(attendance_date, period_no, department, semester, subject_code, teacher_id):
                 flash("Attendance already submitted for this period!", "error")
                 return redirect(back_url)
             
@@ -161,13 +157,13 @@ def attendance_submit():
                     name = request.form.get(f"name_{register_no}")
                     insrt_attendance_tabel(register_no, name, subject_name, subject_code, teacher_id, attendance_date, period_no, status, marked_by)          
 
-            insrt_lock(attendance_date, period_no, department, semester, class_name, subject_code, marked_by, role, teacher_id)
+            insrt_lock(attendance_date, period_no, department, semester, subject_code, marked_by, role, teacher_id)
             flash("Attendance submitted successfully!", "success")
 
             return redirect(back_url)
             
         elif action == 'edit':
-            if not is_attendance_locked(attendance_date, period_no, department, semester, class_name, subject_code, teacher_id):
+            if not is_attendance_locked(attendance_date, period_no, department, semester, subject_code, teacher_id):
                 flash("Attendance Not Yet Submitted!", "error")
                 return redirect(back_url)
                 
@@ -178,7 +174,7 @@ def attendance_submit():
                     name = request.form.get(f"name_{register_no}")
                     update_attendance(register_no, name, subject_name, subject_code, teacher_id, attendance_date, period_no, status, marked_by)
                 
-            update_attendance_lock(attendance_date, period_no, department, semester, class_name, subject_code, marked_by, role, teacher_id)
+            update_attendance_lock(attendance_date, period_no, department, semester, subject_code, marked_by, role, teacher_id)
             flash("Attendance Updated Successfully!", "success")
             return redirect(back_url)
 
@@ -203,22 +199,17 @@ def attendance_report():
         return redirect(url_for('auth.login'))
     
     teacher_id = session['teacher_id']
-    get_classes = get_teacher_timetable(teacher_id)
-    classes = list(set(row['class_name'] for row in get_classes))
-
-    department = None
+    teacher = teacher_table(teacher_id)
+    department = teacher['department']
     year = None
     reports = {}
 
     if request.method == "POST":
         semester =request.form['semester']
-        class_name =request.form['class_name']
 
-        students = get_report(semester, class_name)
+        students = get_report(semester, department)
         if students:
             register_no = [r['register_no'] for r in students]
-            department = list(set(r['department'] for r in students))
-            department = department[0] if department else None
             year = list(set(r['year'] for r in students))
             year = year[0] if year else None
             attendance_list = take_attendance_report(register_no)
@@ -226,7 +217,6 @@ def attendance_report():
 
     return render_template(
     'teacher/attendance_report.html',
-    classes = classes,
     department = department,
     year = year,
     reports = reports)

@@ -69,7 +69,6 @@
                             </div>
                         {% else %}
                             <form method="POST" action="{{ url_for('teacher.attendance_mark') }}">
-                                <input type="hidden" name="class_name" value="{{ p.class }}">
                                 <input type="hidden" name="department" value="{{ p.department }}">
                                 <input type="hidden" name="year" value="{{ p.year }}">
                                 <input type="hidden" name="semester" value="{{ p.semester }}">
@@ -80,7 +79,7 @@
                                 <button type="submit" class="period-card active">
                                     <p>{{p.period_no}}</p>
                                     <p>{{ p.subject_name }}</p>
-                                    <p>{{ p.class }} -{{p.year}}</p>
+                                    <p>{{ p.department }} -{{p.year}}</p>
                                 </button>
                             </form>
 

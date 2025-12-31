@@ -12,12 +12,12 @@ def incharge_table(user_id):
         cursor.close()
         conn.close()
 
-def students_list(class_name, semester, department):
+def students_list(semester, department):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("SELECT register_no, gender FROM students WHERE class_name = %s AND semester = %s AND department =%s ORDER BY register_no",(class_name, semester, department))
+        cursor.execute("SELECT register_no, gender FROM students WHERE semester = %s AND department =%s ORDER BY register_no",(semester, department))
         return cursor.fetchall()
     
     finally:
@@ -38,13 +38,13 @@ def attendance_list(register_no):
         cursor.close()
         conn.close()
 
-def load_cls_timetable(class_name, semester, department, day):
+def load_cls_timetable(semester, department, day):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("SELECT * FROM timetable WHERE class_name = %s AND semester = %s AND department =%s AND day = %s",
-        (class_name, semester, department, day))
+        cursor.execute("SELECT * FROM timetable WHERE semester = %s AND department =%s AND day = %s",
+        (semester, department, day))
         return cursor.fetchall()
     
     finally:
@@ -63,26 +63,26 @@ def update_attendance(register_no, name, subject_name, subject_code, teacher_id,
         cursor.close()
         conn.close()
 
-def update_attendance_lock(attendance_date, period_no, department, semester, class_name, subject_code, marked_by, role, teacher_id):
+def update_attendance_lock(attendance_date, period_no, department, semester, subject_code, marked_by, role, teacher_id):
     conn =get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("UPDATE attendance_lock SET locked_by = %s , role = %s WHERE attendance_date=%s AND period_no=%s AND department=%s AND semester=%s AND class_name=%s AND subject_code=%s AND teacher_id=%s",
-        ( marked_by,  role, attendance_date, period_no, department, semester, class_name, subject_code, teacher_id))
+        cursor.execute("UPDATE attendance_lock SET locked_by = %s , role = %s WHERE attendance_date=%s AND period_no=%s AND department=%s AND semester=%s AND subject_code=%s AND teacher_id=%s",
+        ( marked_by,  role, attendance_date, period_no, department, semester, subject_code, teacher_id))
         conn.commit()
 
     finally:
         cursor.close()
         conn.close()
 
-def incharege_timetable(class_name, semester, department):
+def incharege_timetable(semester, department):
     conn =get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("SELECT * FROM timetable WHERE class_name=%s AND semester=%s AND department=%s",
-        (class_name, semester, department ))
+        cursor.execute("SELECT * FROM timetable WHERE semester=%s AND department=%s",
+        (semester, department ))
         return cursor.fetchall()
 
     finally:

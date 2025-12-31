@@ -51,13 +51,13 @@ def dashboard_total_days(register_no):
         cursor.close()
         conn.close()
 
-def get_timetable(department, year, class_name, semester):
+def get_timetable(department, year, semester):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     try:
-        cursor.execute("""SELECT day, period_no, subject_name FROM timetable WHERE department=%s AND year=%s AND semester=%s AND class_name=%s  ORDER BY day, period_no """,  
-        (department, year, semester, class_name))
+        cursor.execute("""SELECT day, period_no, subject_name FROM timetable WHERE department=%s AND year=%s AND semester=%s ORDER BY day, period_no """,  
+        (department, year, semester))
         return cursor.fetchall()
     
     finally:

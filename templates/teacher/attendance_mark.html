@@ -16,7 +16,7 @@
         <a href="{{ back_url }}" class="back">← Back</a>
 
         <div class="info">
-            <h2>Department: {{department}} - {{year}} Year - {{class_name}}</h2>
+            <h2>Department: {{department}} - {{year}} Year</h2>
             <p>Subject: {{subject_name}} | Period: {{period}} | Today: {{ today_date }}</p>
         </div>
     </div>
@@ -38,7 +38,6 @@
             <input type="hidden" name="subject_name" value="{{ subject_name }}">
             <input type="hidden" name="teacher_id" value="{{ teacher_id }}">
             <input type="hidden" name="department" value="{{ department }}">
-            <input type="hidden" name="class_name" value="{{ class_name }}">
             <input type="hidden" name="semester" value="{{ semester }}">
 
             {% for student in class_list %}

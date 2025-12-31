@@ -1,7 +1,7 @@
 def teacher_shedule(teacher_timetable):
     schedule = {}
     for r in teacher_timetable:
-        schedule[r['period_no']] = { "subject": r['subject_name'],"class_name": r['class_name'],"department": r['department'],"semester": r['semester'],"year":r['year'],"subject_code":r['subject_code'],"teacher_id":r['teacher_id'] }
+        schedule[r['period_no']] = { "subject": r['subject_name'],"department": r['department'],"semester": r['semester'],"year":r['year'],"subject_code":r['subject_code'],"teacher_id":r['teacher_id'] }
 
     return schedule
 
@@ -24,7 +24,6 @@ def periods_calculation(result):
             today_periods.append({
                 "period_no": f"P:{period_no}" ,
                 "subject_name": row['subject'].upper(),
-                "class": row['class_name'],
                 "year": row['year'],
                 "department": row['department'],
                 "semester": row['semester'],
@@ -65,7 +64,7 @@ def load_teacher_timetable(rows):
         timetable[day][period_no - 1] = {
             "period_no": period_no,
             "subject_name": row['subject_name'],
-            "class_name": row['class_name'],
+            "department":row['department'],
             "year": row['year']
         }
 

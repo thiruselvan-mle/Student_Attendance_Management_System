@@ -98,10 +98,10 @@ def build_week_attendance(base_date, register_no, timetable, student_day_attenda
     return response
 
 
-def get_subject_total_periods(register_no, department, semester, class_name, year,
+def get_subject_total_periods(register_no, department, semester, year,
                               get_timetable, load_timetable, dashboard_attendance):
 
-    result_timetable = get_timetable(department, year, class_name, semester)
+    result_timetable = get_timetable(department, year, semester)
     timetable = load_timetable(result_timetable)
 
     rows = dashboard_attendance(register_no)
@@ -124,9 +124,9 @@ def get_subject_total_periods(register_no, department, semester, class_name, yea
 
     return subject_total
 
-def get_subject_present_count(register_no, subject_total, department, semester, class_name, year, get_timetable, dashboard_attendance, load_timetable):
+def get_subject_present_count(register_no, subject_total, department, semester, year, get_timetable, dashboard_attendance, load_timetable):
 
-    result_timetable = get_timetable(department, year, class_name, semester)
+    result_timetable = get_timetable(department, year, semester)
     timetable = load_timetable(result_timetable)
 
     subject_present = {sub: 0 for sub in subject_total}
@@ -152,11 +152,11 @@ def get_subject_present_count(register_no, subject_total, department, semester, 
 
     return subject_present
 
-def get_subject_overview(register_no, department, semester, class_name , year, get_timetable, load_timetable, dashboard_attendance, get_subject_total_periods, get_subject_present_count):
+def get_subject_overview(register_no, department, semester, year, get_timetable, load_timetable, dashboard_attendance, get_subject_total_periods, get_subject_present_count):
 
-    subject_total = get_subject_total_periods(register_no, department, semester, class_name , year, get_timetable, load_timetable, dashboard_attendance)
+    subject_total = get_subject_total_periods(register_no, department, semester, year, get_timetable, load_timetable, dashboard_attendance)
 
-    subject_present = get_subject_present_count(register_no, subject_total, department, semester, class_name, year, get_timetable, dashboard_attendance, load_timetable)
+    subject_present = get_subject_present_count(register_no, subject_total, department, semester, year, get_timetable, dashboard_attendance, load_timetable)
 
     overview = []
     for i, subject in enumerate(subject_total, start=1):
