@@ -7,5 +7,5 @@ class Config:
     DB_USER = os.environ.get("DB_USER","root")
     DB_PASSWORD = os.environ.get("DB_PASSWORD","thiru@2006")
     DB_NAME = os.environ.get("DB_NAME","student_attendance_management_system")
-    #DB_PORT = int(os.environ.get("DB_PORT", 3307))
+    DB_PORT = int(os.environ.get("DB_PORT", 3307))
 
