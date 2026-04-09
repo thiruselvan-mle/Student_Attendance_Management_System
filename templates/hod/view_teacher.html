@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Teacher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='hod/view_teacher.css') }}">
+    <meta name="theme-color" content="#ffffff">  
+</head>
+<body>
+
+<div class="layout">
+
+    <main class="content">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h2>Teacher Profile</h2>
+            <p>Complete teacher information</p>
+        </div>
+
+        <!-- PROFILE CARD -->
+        <div class="profile-card">
+
+            <div class="profile-top">
+                <div class="avatar">
+                     {% if gender.lower() == 'male' %}
+                        <img src="{{ url_for('static', filename='images/male-staff.png') }}" alt="T" class="logo-img">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/female-staff.png') }}" alt="T" class="logo-img">
+                    {% endif %}
+                </div>
+                <div class="info">
+                    <h3>{{name.upper()}}</h3>
+                </div>
+            </div>
+
+            <!-- DETAILS -->
+            <div class="details-grid">
+
+                <div class="detail">
+                    <span>Teacher ID</span>
+                    <p>{{teacher_id.upper()}}</p>
+                </div>
+
+                <div class="detail">
+                    <span>Department</span>
+                    <p>{{department.upper()}}</p>
+                </div>
+
+                <div class="detail">
+                    <span>Email</span>
+                    <p>{{email}}</p>
+                </div>
+
+                <div class="detail">
+                    <span>Phone</span>
+                    <p>{{phone}}</p>
+                </div>
+
+                <div class="detail">
+                    <span>Subjects Handling</span>
+                    {% for s in subject_name %}
+                    <p>{{s}}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="detail">
+                    <span>Classes</span>
+                    {% for y in year %}
+                    <p>{{y}} Year</p>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <div class="btn-group">
+                <a href="{{ url_for('hod.teacher_list') }}" class="btn back">Back</a>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

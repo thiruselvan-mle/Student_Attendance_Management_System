@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit HOD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/add_hod.css') }}">
+</head>
+<body>
+
+<main class="content">
+
+    <!-- TOP HEADER CARD -->
+    <div class="top-card">
+        <h2>Edit HOD</h2>
+        <p>Edit Head of Department account</p>
+    </div>
+
+
+    <form method="POST" class="form-card" enctype="multipart/form-data">
+
+        <!-- BASIC DETAILS -->
+        <h3>Basic Details</h3>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>HOD ID</label>
+                <input type="text" name="hod_id" value="{{hod.hod_id.upper()}}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{hod.name.upper()}}"  required>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" value="{{hod.email}}"  required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" name="phone" value="{{hod.phone}}"  required>
+            </div>
+
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Gender</label>
+                <select name="gender">
+                    <option value="male" {% if hod.gender.lower() == 'male' %} selected {% endif %}>Male</option>
+                    <option value="female" {% if hod.gender.lower() == 'female' %} selected {% endif %}>Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" name="department" value="{{hod.department}}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Experience (Years)</label>
+                <input type="number" name="experience" value="{{hod.experience}}" min="1" step="1"  required>
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" value="{{hod.password}}"  required>
+            </div>
+
+            <div class="form-group">
+                    <label>start_year</label>
+                    <input type="number" name="start_year" value="{{hod.start_year}}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>end_year</label>
+                    <input type="number" name="end_year" value="{{hod.end_year}}" required>
+                </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary" name="action" value="update">Update</button>
+            <a href="{{ url_for('admin.hod_management') }}" class="btn-back">← Back</a>
+        </div>
+
+    </form>
+
+</main>
+</body>
+
+</html>

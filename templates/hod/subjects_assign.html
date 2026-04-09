@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assign Subjects</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='hod/subjects_assign.css') }}">
+    <meta name="theme-color" content="#ffffff">   
+</head>
+<body>
+
+    <form method="POST" action="{{ url_for('hod.subject_assign') }}">
+
+        <!-- BASIC DETAILS -->
+        <div class="card">
+            <h2>Subject Assignment</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Year</label>
+                    <select name="year" required>
+                        <option value="">Select</option>
+                        <option value="1" {% if year == 1 %}selected{% endif %} {% if hod_year == 2 %} disabled {% endif %}>1st Year</option>
+                        <option value="2" {% if year == 2 %}selected{% endif %} {% if hod_year == 1 %} disabled {% endif %}>2nd Year</option>
+                        <option value="3" {% if year == 3 %}selected{% endif %} {% if hod_year == 1 %} disabled {% endif %}>3rd Year</option>
+                        <option value="4" {% if year == 4 %}selected{% endif %} {% if hod_year == 1 %} disabled {% endif %}>4th Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Semester</label>
+                    <input type="number" name="semester" min="1" max="8"
+                        value="{{ semester }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" value="{{ department.upper() }}" readonly>
+                </div>
+
+                <button type="submit" name="action" value="load" class="btn-tt">
+                    Load
+                </button>
+            </div>
+        </div>
+
+        <!-- FLASH MESSAGE -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- SUBJECT ASSIGN TABLE -->
+        <div class="card">
+            <h2>Assign Subjects to Teachers</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Teacher</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="subjectBody">
+
+                    {% if assigned_subjects %}
+                        {% for s in assigned_subjects %}
+                        <tr>
+                            <td>
+                                <input type="text"
+                                    name="subjects[{{ loop.index0 }}][code]"
+                                    value="{{ s.code }}">
+                            </td>
+
+                            <td>
+                                <input type="text"
+                                    name="subjects[{{ loop.index0 }}][name]"
+                                    value="{{ s.name }}">
+                            </td>
+
+                            <td>
+                                <select name="subjects[{{ loop.index0 }}][teacher]">
+                                    <option value="">Select Teacher</option>
+                                    {% for t in teachers %}
+                                    <option value="{{ t.teacher_id }}"
+                                        {% if t.teacher_id == s.teacher_id %}selected{% endif %}>
+                                        {{ t.name.upper() }} - {{ t.teacher_id.upper() }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    {% else %}
+                        <!-- DEFAULT ONE EMPTY ROW -->
+                        <tr>
+                            <td>
+                                <input type="text" name="subjects[0][code]"
+                                    placeholder="CS501">
+                            </td>
+                            <td>
+                                <input type="text" name="subjects[0][name]"
+                                    placeholder="Machine Learning">
+                            </td>
+                            <td>
+                                <select name="subjects[0][teacher]">
+                                    <option value="">Select Teacher</option>
+                                    {% for t in teachers %}
+                                    <option value="{{ t.teacher_id }}">
+                                        {{ t.name.upper() }} - {{ t.teacher_id.upper() }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    {% endif %}
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- + / - CONTROLS -->
+            <div class="row-controls">
+                <button type="button" onclick="addRow()">+</button>
+                <button type="button" onclick="removeRow()">−</button>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="btn-row">
+            <button type="submit" name="action" value="save" class="btn-primary">
+                Save Subjects
+            </button>
+            <a href="{{ url_for('hod.hod_dashboard') }}" class="btn-secondary">
+                ← Back
+            </a>
+        </div>
+
+    </form>
+
+    <!-- AUTO HIDE ALERT -->
+    <script>
+        setTimeout(() => {
+            const alertBox = document.querySelector(".alert");
+            if (alertBox) alertBox.style.display = "none";
+        }, 3000);
+        </script>
+
+        <!-- DYNAMIC ROW SCRIPT -->
+        <script>
+        let rowIndex =
+        {{ assigned_subjects|length if assigned_subjects else 1 }};
+
+        function addRow() {
+            const body = document.getElementById("subjectBody");
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td><input type="text" name="subjects[${rowIndex}][code]"></td>
+                <td><input type="text" name="subjects[${rowIndex}][name]"></td>
+                <td>
+                    <select name="subjects[${rowIndex}][teacher]">
+                        <option value="">Select Teacher</option>
+                        {% for t in teachers %}
+                        <option value="{{ t.teacher_id }}">
+                            {{ t.name.upper() }} - {{ t.teacher_id.upper() }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </td>
+            `;
+            body.appendChild(row);
+            rowIndex++;
+        }
+
+        function removeRow() {
+            const body = document.getElementById("subjectBody");
+            if (body.rows.length > 1) {
+                body.deleteRow(body.rows.length - 1);
+                rowIndex--;
+            }
+        }
+    </script>
+
+</body>
+</html>

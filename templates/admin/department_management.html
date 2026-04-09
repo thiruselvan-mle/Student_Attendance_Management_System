@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Department Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/department_management.css') }}">
+    <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">ADMIN</h2>
+        <nav>
+            <a href="{{ url_for('admin.admin_dashboard')}}" class="active">Dashboard</a>
+            <a href="{{ url_for('admin.department_management') }}">Departments</a>
+            <a href="{{ url_for('admin.hod_management')}}">HOD</a>
+            <a href="{{ url_for('admin.incharge_management')}}">Incharge</a>
+            <a href="{{ url_for('admin.teacher_management')}}">Teachers</a>
+            <a href="{{ url_for('admin.student_management')}}" >Students</a>
+            <a href="{{ url_for('admin.attendance_report')}}" >Attendance</a>
+            <a href="{{ url_for('admin.semester_duration')}}">Sem Duration</a>
+            <a href="{{ url_for('admin.admin_profile')}}">Profile</a>
+            <a href="{{ url_for('auth.login')}}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="header">
+            <h2>Department Management</h2>
+            <p>Manage all departments in the institution</p>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="action-bar">
+            <a href="{{ url_for('admin.add_department')}}" class="btn-primary">
+                + Add Department
+            </a>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Department Code</th>
+                        <th>Department Name</th>
+                        <th>Total Students</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dept in departments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ dept.dept_code.upper() }}</td>
+                        <td>{{ dept.dept_name.upper() }}</td>
+                        <td>{{ dept.total_students }}</td>
+                        <td class="actions">
+                            <form action="{{ url_for('admin.delete_department')}}" method="POST" onsubmit="return confirmDelete();">
+                                <input type="hidden" name ="code" value="{{ dept.dept_code }}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="delete" >Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+   <script>
+        setTimeout(() => {
+            const alertBox = document.querySelector(".alert");
+            if (alertBox) alertBox.style.display = "none";
+        }, 3000);
+
+        function confirmDelete() {
+            return confirm("This action cannot be undone. Delete this department?");
+        }
+    </script> 
+</body>
+</html>

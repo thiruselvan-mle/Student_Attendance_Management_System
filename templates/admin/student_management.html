@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename = 'hod/teacher_list.css')}}">
+    <meta name="theme-color" content="#ffffff">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h2>Students List</h2>
+            <p>Manage Students</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+    {% endwith %}
+
+    <div class="search">
+        <form class="search" action="{{ url_for('admin.student_search')}}" method="POST">
+            <input type="text" placeholder="Search student name / reg_no" name="search_data" required>
+            <input type="hidden" name="action" value="search">
+            <button type="submit" >Search Student</button>
+        </form>
+
+        <form class="search" action="{{ url_for('admin.add_student')}}" method="POST">
+            <button type="submit">Add Student</button>
+            <a href="{{ url_for ('admin.admin_dashboard') }}">← Back</a>
+        </form>
+    </div>
+
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Register No</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Year</th>
+                    <th>View</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            {% if students %}
+                {% for s in students %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ s.register_no.upper() }}</td>
+                        <td>{{ s.name.upper() }}</td> 
+                        <td>{{ s.department.upper() }}</td>
+                        <td>{{ s.year }}</td>
+                        <td><form action="{{ url_for('admin.view_student')}}" method="post">
+                            <input type="hidden" name="register_no" value="{{ s.register_no }}">
+                            <input type="hidden" name="action" value="view">
+                            <button type="submit" class="btn view">View</button>
+                        </form></td>
+                        <td><form action="{{ url_for('admin.edit_student')}}" method="post">
+                            <input type="hidden" name="register_no" value="{{ s.register_no }}">
+                            <input type="hidden" name="action" value="edit">
+                            <button type="submit" class="btn edit">Edit</button>
+                        </form></td>
+                        <td><form action="{{ url_for('admin.delete_student')}}" method="post" onsubmit="return confirmDelete();">
+                            <input type="hidden" name="register_no" value="{{ s.register_no }}">
+                            <input type="hidden" name="action" value="delete">
+                            <button type="submit" class="btn delete">Delete</button>
+                        </form></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6" style="text-align:center; color: red;">No students found</td>
+                </tr>
+            {% endif %}
+    </div>
+
+</div>
+    <script>
+        setTimeout(() => {
+            const alertBox = document.querySelector(".alert");
+            if (alertBox) alertBox.style.display = "none";
+        }, 3000);
+
+
+        function confirmDelete() {
+            return confirm("This action cannot be undone. Delete this student?");
+        }
+    </script>
+
+</body>
+</html>

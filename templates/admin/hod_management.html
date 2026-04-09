@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HOD Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/hod_management.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">Admin</h2>
+        <nav>
+            <a href="{{ url_for('admin.admin_dashboard')}}" >Dashboard</a>
+            <a href="{{ url_for('admin.department_management') }}">Departments</a>
+                <a href="{{ url_for('admin.hod_management')}}" class="active">HOD</a>
+                <a href="{{ url_for('admin.incharge_management')}}">Incharge</a>
+                <a href="{{ url_for('admin.teacher_management')}}">Teachers</a>
+                <a href="{{ url_for('admin.student_management')}}" >Students</a>
+                <a href="{{ url_for('admin.attendance_report')}}" >Attendance</a>
+                <a href="{{ url_for('admin.semester_duration')}}">Sem Duration</a>
+                <a href="{{ url_for('admin.admin_profile')}}">Profile</a>
+                <a href="{{ url_for('auth.login')}}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+        <div class="header">
+            <h2>HOD Management</h2>
+            <p>Manage Head of Departments</p>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <!-- ACTION BAR -->
+        <div class="action-bar">
+            <a href="{{ url_for('admin.add_hod')}}" class="btn-primary">
+                + Add HOD
+            </a>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>HOD ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Departments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if hods %}
+                    {% for hod in hods %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ hod.hod_id.upper() }}</td>
+                        <td>{{ hod.name.upper() }}</td>
+                        <td>{{ hod.email }}</td>
+                        <td>
+                            {% if hod.department %}
+                                {{ hod.department.upper()}}
+                            {% else %}
+                                <span class="badge">Not Assigned</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions">
+                            <form action="{{ url_for('admin.hod_action')}}" method="POST">
+                                <input type="hidden" name="hod_id" value="{{hod.hod_id}}">
+                                <input type="hidden" name="department" value="{{hod.department}}">
+                                <button class="view" name="action" value="view">View</button>
+                                <button class="edit" name="action" value="edit">Edit</button>
+                                <button class="delete" name="action" value="delete" onclick="return confirmDelete();">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                        <p>NO Hod Assign</p>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+    <script>
+        setTimeout(() => {
+            const alertBox = document.querySelector(".alert");
+            if (alertBox) alertBox.style.display = "none";
+        }, 3000);
+
+        function confirmDelete() {
+            return confirm("This action cannot be undone. Delete this hod?");
+        }
+    </script>
+</body>
+</html>

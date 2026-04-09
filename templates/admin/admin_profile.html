@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="{{ url_for('static', filename='incharge/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/profile.css') }}">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">ADMIN</h2>
+        <nav>
+            <a href="{{ url_for('admin.admin_dashboard')}}" >Dashboard</a>
+            <a href="{{ url_for('admin.department_management') }}">Departments</a>
+            <a href="{{ url_for('admin.hod_management')}}">HOD</a>
+            <a href="{{ url_for('admin.incharge_management')}}">Incharge</a>
+            <a href="{{ url_for('admin.teacher_management')}}">Teachers</a>
+            <a href="{{ url_for('admin.student_management')}}" >Students</a>
+            <a href="{{ url_for('admin.attendance_report')}}" >Attendance</a>
+            <a href="{{ url_for('admin.semester_duration')}}">Sem Duration</a>
+            <a href="{{ url_for('admin.admin_profile')}}" class="active">Profile</a>
+            <a href="{{ url_for('auth.login')}}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-icon">
+                    <img src="{{ url_for('static', filename='images/admin.png') }}" alt="A" class="logo-img">
+                </div>
+                <h2>{{ admin.name.upper() }}</h2>
+            </div>
+
+            <div class="profile-info">
+                <div><span>Admin ID:</span> {{ admin.admin_id.upper() }}</div>
+                <div><span>Email:</span> {{ admin.email }}</div>
+                <div><span>Phone:</span> {{ admin.phone }}</div>
+            </div>
+
+        </div>
+
+        <div class="promote-box">
+            <button class="promote-btn" onclick="openPasswordModal()">
+                <span>⬆</span> Promote Students
+            </button>
+        </div>
+
+        <div id="promoteModal" class="modal">
+        <div class="modal-content">
+            <h3>⚠ Confirm Promotion</h3>
+            <p>Type <b>promote</b> to continue</p>
+            
+        
+                <p class="instruction">Promote Students</p>
+                <p class="instruction">Update Semester Duration</p>
+                <p class="instruction">Previous Attendance Delete</p>
+            
+
+            <input type="text" id="confirmText" placeholder="Type promote">
+
+            <div class="modal-actions">
+                <button class="btn cancel" type="button" onclick="closePromoteModal()">Cancel</button>
+                <button class="btn confirm" type="button" onclick="confirmPromote()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <h3>🔒 Admin Verification</h3>
+        <p>Enter your password to continue</p>
+
+        <input type="password" id="adminPassword" placeholder="Admin Password">
+
+        <div class="modal-actions">
+            <button class="btn cancel" type="button" onclick="closePasswordModal()">Cancel</button>
+            <button class="btn confirm" type="button" onclick="verifyPassword()">Verify</button>            </div>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Processing Promotion...</p>
+    </div>
+
+    </main>
+</div>
+
+    <script>
+        function openPasswordModal() {
+            document.getElementById("adminPassword").value = "";
+            document.getElementById("passwordModal").style.display = "flex";
+        }
+
+        function closePasswordModal() {
+            document.getElementById("adminPassword").value = "";
+            document.getElementById("passwordModal").style.display = "none";
+        }
+
+        function verifyPassword() {
+            const password = document.getElementById("adminPassword").value;
+
+            if (!password) {
+                alert("Please enter password");
+                return;
+            }
+
+            fetch("/admin/verify_password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success) {
+                    alert("❌ Wrong password");
+                    return;
+                }
+
+                closePasswordModal();
+                openPromoteModal(); // ✅ NEXT STEP
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Server error");
+            });
+        }
+
+
+        function openPromoteModal() {
+            document.getElementById("confirmText").value = ""; // ✅ reset input
+            document.getElementById("promoteModal").style.display = "flex";
+        }
+
+        function closePromoteModal() {
+            document.getElementById("confirmText").value = ""; // ✅ reset input
+            document.getElementById("promoteModal").style.display = "none";
+        }
+
+        let promoteInProgress = false; // 🛑 double click guard
+
+        function confirmPromote() {
+
+            if (promoteInProgress) return; // ❌ already running
+
+            const text = document.getElementById("confirmText").value.trim().toLowerCase();
+
+            if (text !== "promote") {
+                alert("Please type 'promote' to continue");
+                return;
+            }
+
+            promoteInProgress = true;
+
+            // ✅ Close modal immediately
+            closePromoteModal();
+
+            // ✅ Show loader
+            document.getElementById("loadingOverlay").style.display = "flex";
+
+            fetch("/admin/promote_students", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(async res => {
+                const data = await res.json();
+
+                // ❌ Hide loader
+                document.getElementById("loadingOverlay").style.display = "none";
+                promoteInProgress = false;
+
+                if (!res.ok) {
+                    alert("❌ " + (data.error || data.message));
+                    return;
+                }
+
+                alert("✅ " + data.message);
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById("loadingOverlay").style.display = "none";
+                promoteInProgress = false;
+                alert("Server error. Try again.");
+            });
+        }
+
+    </script>
+
+</body>
+</html>

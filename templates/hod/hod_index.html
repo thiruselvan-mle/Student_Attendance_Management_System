@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HOD Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename = 'hod/hod_index.css')}}">
+    <meta name="theme-color" content="#ffffff"> 
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div>
+                <h2>Welcome, {{hod_name.upper()}}</h2>
+                <p>Department Overview Dashboard</p>
+            </div>
+            <div class="profile">
+                <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a><br>
+                <small>{{today}} {{today_date}}</small>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Departments</h3>
+                <p>{{total_department}}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Classes</h3>
+                <p>{{total_classes}}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <p>{{total_students}}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Attendance</h3>
+                <p>{{avg_percentage}}%</p>
+            </div>
+        </div>
+
+        <h3 class="dept-title">Departments</h3>
+
+        <div class="dept-grid">
+            {% for dept, d in department.items() %}
+                <form method="POST" action="{{ url_for('hod.hod_dashboard') }}">
+            
+                    <input type="hidden" name="department" value="{{ dept }}">
+                    <input type="hidden" name="total_class" value="{{ d.total_class }}">
+                    <input type="hidden" name="total_student" value="{{ d.total_student }}">
+
+                    <div class="dept-card">
+                        <h3>{{ dept.upper() }}</h3>
+                        <p>Total Classes: {{ d.total_class }}</p>
+                        <p>Total Students: {{ d.total_student }}</p>
+
+                        <button type="submit" class="dept-btn">View Department</button>
+                    </div>
+                </form>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</body>
+</html>

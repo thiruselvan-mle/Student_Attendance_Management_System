@@ -1,0 +1,178 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Admin Dashboard</title>
+        <link rel="stylesheet" href="{{ url_for ('static', filename ='admin/dashboard.css') }}">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+    </head>
+    <body>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <h2 class="logo">ADMIN</h2>
+            <nav>
+                <a href="{{ url_for('admin.admin_dashboard')}}" class="active">Dashboard</a>
+                <a href="{{ url_for('admin.department_management') }}">Departments</a>
+                <a href="{{ url_for('admin.hod_management')}}">HOD</a>
+                <a href="{{ url_for('admin.incharge_management')}}">Incharge</a>
+                <a href="{{ url_for('admin.teacher_management')}}">Teachers</a>
+                <a href="{{ url_for('admin.student_management')}}" >Students</a>
+                <a href="{{ url_for('admin.attendance_report')}}" >Attendance</a>
+                <a href="{{ url_for('admin.semester_duration')}}">Sem Duration</a>
+                <a href="{{ url_for('admin.admin_profile')}}">Profile</a>
+                <a href="{{ url_for('auth.login')}}" class="logout">Logout</a>
+            </nav>
+        </aside>
+
+        <!-- CONTENT -->
+        <main class="content">
+
+            <!-- HEADER -->
+            <div class="header">
+                <h2>Dashboard</h2>
+                <p>Admin Panel</p>
+            </div>
+
+            <!-- WELCOME CARD -->
+            <div class="welcome-card">
+                <h3>Welcome, {{ admin.name.upper() }} 👋</h3>
+                <p>Here is the overall college attendance summary</p>
+            </div>
+
+            <!-- TOTAL CARDS -->
+            <div class="cards">
+                <div class="card">
+                    <h4>Departments</h4>
+                    <p>{{ total_dept }}</p>
+                </div>
+                <div class="card">
+                    <h4>Teachers</h4>
+                    <p>{{ total_teacher }}</p>
+                </div>
+                <div class="card">
+                    <h4>Students</h4>
+                    <p>{{ total_student }}</p>
+                </div>
+                <div class="card">
+                    <h4>Avg Attendance</h4>
+                    <p>{{ sem_percentage }}%</p>
+                </div>
+
+                <div class="card">
+                    <h4>Today Attendance</h4>
+                    <p>{{ today_percentage }}%</p>
+                </div>
+            </div>
+
+            <!-- CHARTS -->
+            
+            <div class="charts">
+
+                <div class="chart-box">
+                    <h3>Semester Attendance Per Departments</h3>
+                    <canvas id="semesterDeptChart"></canvas>
+                </div>
+
+
+                <div class="chart-box">
+                    <h3>Today Attendance Per Departments</h3>
+                    <canvas id="todayDeptChart"></canvas>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+        <script>
+            
+            const semesterLabels = {{ semester_labels | tojson }};
+            const semesterValues = {{ semester_values | tojson }};
+
+            const todayLabels = {{ today_labels | tojson }};
+            const todayValues = {{ today_values | tojson }};
+
+            /* DEPARTMENT WISE ATTENDANCE */
+            const semesterCtx = document
+                .getElementById('semesterDeptChart')
+                .getContext('2d');
+
+            new Chart(semesterCtx, {
+                type: 'bar',
+                data: {
+                    labels: semesterLabels,
+                    datasets: [{
+                        label: 'Semester Attendance %',
+                        data: semesterValues,
+                        backgroundColor: '#2563eb',
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: value => value + '%'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+
+            /* TODAY ATTENDANCE CHART */
+            const todayCtx = document
+                .getElementById('todayDeptChart')
+                .getContext('2d');
+
+            new Chart(todayCtx, {
+                type: 'bar',
+                data: {
+                    labels: todayLabels,
+                    datasets: [{
+                        label: 'Today Attendance %',
+                        data: todayValues,
+                        backgroundColor: '#16a34a',
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: value => value + '%'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/service-worker.js');
+            }
+        </script>
+
+    </body>
+    </html>

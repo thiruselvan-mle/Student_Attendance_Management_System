@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Timetable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="{{ url_for('static', filename='hod/create_timetable.css') }}">
+    
+</head>
+<body>
+
+<form method="POST"
+      action="{{ url_for('hod.create_timetable') }}"
+      enctype="multipart/form-data">
+
+    <!-- BASIC DETAILS -->
+    <div class="card">
+        <h2>Timetable Details</h2>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Year</label>
+                <select name="year" required>
+                    <option value="">Select year</option>
+                    <option value="1" {% if year == 1 %} selected {% endif %} {% if hod_year == 2 %} disabled {% endif %}>1st Year</option>
+                    <option value="2" {% if year == 2 %} selected {% endif %} {% if hod_year == 1 %} disabled {% endif %}>2nd Year</option>
+                    <option value="3" {% if year == 3 %} selected {% endif %} {% if hod_year == 1 %} disabled {% endif %}>3rd Year</option>
+                    <option value="4" {% if year == 4 %} selected {% endif %} {% if hod_year == 1 %} disabled {% endif %}>4th Year</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Semester</label>
+                <input type="number" name="semester" min="1" max="8" value="{{semester}}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Department</label>
+                <input type="text" name="department" value="{{ department.upper() }}" readonly>
+            </div>
+            <div class="btn-row">
+                <button type="submit" name="action" value="load" class="btn-tt">LOAD</button>
+                <a href="{{ url_for('hod.hod_dashboard') }}" class="a-tt">← Back</a>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <h2>Timetable (Manual Entry)</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Day / Period</th>
+                    {% for p in range(1,8) %}
+                    <th>P{{ p }}</th>
+                    {% endfor %}
+                </tr>
+
+                {% for day in ['Monday','Tuesday','Wednesday','Thursday','Friday'] %}
+                <tr>
+                    <td class="day">{{ day }}</td>
+                    {% for p in range(1,8) %}
+                    <td>
+                        <select name="timetable[{{ day }}][{{ p }}]">
+                            <option value="">-- Select --</option>
+                            {% if subjects %}
+                                {% for s in subjects %}
+                                    <option value="{{ s.subject_code }}|{{ s.teacher_id }}"
+                                        {% if timetable_data.get(day, {}).get(p) == s.subject_code ~ '|' ~ s.teacher_id %}
+                                            selected
+                                        {% endif %}>
+                                        {{ s.subject_name }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                    <option value="">No Subjects Assigned</option>
+                            {% endif %}
+                        </select>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    <button class="btn-primary" type="submit" name="action" value="save" >Save Timetable</button>
+</form>
+    <script>
+        setTimeout(() => {
+            const alertBox = document.querySelector(".alert");
+            if (alertBox) alertBox.style.display = "none";
+        }, 3000);
+
+    </script>
+</body>
+</html>

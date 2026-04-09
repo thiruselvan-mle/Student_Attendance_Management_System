@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hod Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='hod/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='hod/hod_profile.css') }}">
+    <meta name="theme-color" content="#ffffff">   
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">HOD PANEL</h2>
+        <nav>
+            <a href="{{ url_for('hod.hod_dashboard') }}">Dashboard</a>
+            <form action="{{ url_for('hod.teacher_list') }}" method="POST">
+                <input type="hidden" name="department" value="{{department}}">
+                <button type="submit">Teacher List</button>
+            </form>
+            <form action="{{ url_for('hod.incharge_list') }}" method="POST">
+                <input type="hidden" name="department" value="{{department}}">
+                <button type="submit">Incharge List</button>
+            </form>
+            <form action="{{ url_for('hod.attendance_report') }}" method="POST">
+                <input type="hidden" name="action" value="dept">
+                <input type="hidden" name="department" value="{{department}}">
+                <button type="submit">Attendance Report</button>
+            </form>
+            <a href="{{ url_for('hod.subject_assign') }}">Assign Subject</a>
+            <a href="{{ url_for('hod.create_timetable') }}">Create_timetable</a>
+            <a href="{{ url_for('hod.hod_profile')}}" class="active">Profile</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout">Logout</a>
+            {% if mult %}
+            <a href="{{url_for('hod.hod_index')}}" class="back">← Back To Dashboard</a>
+            {%endif%} 
+        </nav>
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="content">
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-icon">
+                    {% if gender.lower() == 'male' %}
+                        <img src="{{ url_for('static', filename='images/male-hod.png') }}" alt="H" class="logo-img">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/female-hod.png') }}" alt="H" class="logo-img">
+                    {% endif %}
+                </div>
+                <h2>{{ hod.name.upper() }}</h2>
+                <p>{{ department.upper() }} Department - HOD</p>
+            </div>
+
+            <div class="profile-info">
+                <div><span>Incharge ID:</span> {{ hod.hod_id.upper() }}</div>
+                <div><span>Email:</span> {{ hod.email }}</div>
+                <div><span>Phone:</span> {{ hod.phone }}</div>
+                <div><span>Experience:</span> {{ hod.experience }} years</div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+
+</body>
+</html>

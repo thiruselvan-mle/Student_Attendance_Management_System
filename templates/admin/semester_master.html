@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Semester Duration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/semester_duration.css') }}">
+    <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+
+<div class="layout">
+    <aside class="sidebar">
+        <h2 class="logo">ADMIN</h2>
+        <nav>
+            <a href="{{ url_for('admin.admin_dashboard')}}">Dashboard</a>
+            <a href="{{ url_for('admin.department_management') }}">Departments</a>
+            <a href="{{ url_for('admin.hod_management')}}">HOD</a>
+            <a href="{{ url_for('admin.incharge_management')}}">Incharge</a>
+            <a href="{{ url_for('admin.teacher_management')}}">Teachers</a>
+            <a href="{{ url_for('admin.student_management')}}" >Students</a>
+            <a href="{{ url_for('admin.attendance_report')}}" >Attendance</a>
+            <a href="{{ url_for('admin.semester_duration')}}" class="active">Sem Duration</a>
+            <a href="{{ url_for('admin.admin_profile')}}">Profile</a>
+            <a href="{{ url_for('auth.login')}}" class="logout">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <div class="header">
+            <h2>Semester Duration</h2>
+            <p>Set Semester Start and End Dates</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-card">
+            <form id="semesterForm" method="POST">
+                <div id="step1">
+                    <label for="year">Year:</label>
+                    <select name="year" id="year" required>
+                        <option value="">Select Year</option>
+                        <option value="1">1 Year</option>
+                        <option value="2">2 Year</option>
+                        <option value="3">3 Year</option>
+                        <option value="4">4 Year</option>
+                    </select>
+
+                    <label for="semester">Semester:</label>
+                    <input type="number" name="semester" id="semester" min="1" step="1" required>
+
+                    <button type="button" id="nextBtn">Next</button>
+                </div>
+
+                <div id="step2" style="display:none;">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" required>
+
+                    <label for="end_date">End Date:</label>
+                    <input type="date" id="end_date" name="end_date" required>
+
+                    <button type="submit">Save Semester</button>
+                    <button type="button" id="backBtn">Back</button>
+                </div>
+            </form>
+
+            <div class="form-card" style="margin-top:30px;">
+                <h3 style="margin-bottom:15px;">Semester Status</h3>
+                <table class="sem-status">
+                    <thead>
+                        <tr>
+                            <th>Dept/Sem</th>
+                            <th>1</th><th>2</th><th>3</th><th>4</th>
+                            <th>5</th><th>6</th><th>7</th><th>8</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dept in departments %}
+                        <tr>
+                            <td>{{ dept.department_name }}</td>
+                            {% for sem in range(1, 9) %}
+                                {% if sem in active_sem_data.get(dept.department_name, []) %}
+                                    <td class="active">{{ sem }}</td>
+                                {% else %}
+                                    <td class="inactive">{{ sem }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+
+    nextBtn.addEventListener('click', async () => {
+        // Removed 'department' variable
+        const year = document.getElementById('year').value;
+        const sem = document.getElementById('semester').value;
+
+        // Only checking Year and Semester
+        if(!year || !sem){
+            alert('Please select both Year and Semester before proceeding.');
+            return;
+        }
+
+        // Fetch existing semester duration via AJAX
+        try {
+            // Updated URL parameters to remove department
+            const response = await fetch(`/admin/sem/get?year=${year}&semester=${sem}`);
+            const data = await response.json();
+
+            if(data.exists){
+                document.getElementById('start_date').value = data.start_date;
+                document.getElementById('end_date').value = data.end_date;
+            } else {
+                document.getElementById('start_date').value = '';
+                document.getElementById('end_date').value = '';
+            }
+
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+        } catch(err) {
+            console.error(err);
+            alert("Failed to load semester data. Check if your backend route supports requests without department.");
+        }
+    });
+
+    backBtn.addEventListener('click', () => {
+        step2.style.display = 'none';
+        step1.style.display = 'block';
+    });
+
+    // Auto-hide alert messages
+    setTimeout(() => {
+        const alerts = document.querySelectorAll(".alert");
+        alerts.forEach(alert => alert.style.display = "none");
+    }, 3000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+.profile-card {
+    background: #fff;
+    max-width: 600px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.profile-header {
+    margin-bottom: 25px;
+}
+
+.logo-img{
+    width: 100px;
+}
+
+
+.profile-header h2 {
+    margin: 5px 0;
+    color: #1e293b;
+}
+
+.profile-header p {
+    color: #555;
+}
+
+.profile-info {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.profile-info div {
+    padding: 8px 0;
+    font-size: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-info span {
+    font-weight: 600;
+    color: #333;
+}
+
+.profile-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.profile-icon {
+    margin-left: 41%;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #003366, #0059b3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    color: white;
+    margin-right: 20px;
+}
+
+.promote-box {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+/* PROMOTE BUTTON */
+.promote-btn {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 10px 25px rgba(0, 8, 25, 0.35);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* HOVER EFFECT */
+.promote-btn:hover {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    box-shadow: 0 12px 30px rgba(39, 0, 0, 0.45);
+    transform: translateY(-3px);
+}
+
+/* ACTIVE (CLICK) */
+.promote-btn:active {
+    transform: scale(0.96);
+}
+
+/* OPTIONAL ICON SHAKE (attention) */
+.promote-btn:hover span {
+    animation: bounce 0.6s;
+}
+
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.instruction {
+    margin: 10px 0;
+    padding-left: 20px;
+    font-size: 14px;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    width: 320px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.modal-content input {
+    width: 90%;
+    padding: 10px;
+    margin-top: 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.cancel {
+    background: #e5e7eb;
+    margin-left: 10px;
+}
+
+.btn.confirm {
+    background: #16a34a;
+    color: white;
+    margin-right: 10px;
+}
+
+.btn.confirm:hover{
+    background-color: #2563eb;
+    transform: scale(0.96);
+}
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay p {
+    color: #fff;
+    margin-top: 15px;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #ccc;
+    border-top: 5px solid #00ffcc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

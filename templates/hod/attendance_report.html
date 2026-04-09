@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="{{ url_for('static', filename ='hod/attendance_report.css') }}">
+    
+</head>
+<body>
+
+    <form action="{{ url_for('hod.attendance_report')}}" method="POST">
+        <input type="hidden" name="action" value="year">
+        <input type="hidden" name="department" value="{{department}}">
+        <div class="modal-overlay" id="yearModal" {% if not year %}style="display:flex;"{% else %}style="display:none;"{% endif %}>
+            <div class="modal">
+                <h2>Select Year</h2>
+                <select name="year">
+                    <option value="1" {% if hod_year == 2 %} disabled {% endif %}>1st Year</option>
+                    <option value="2" {% if hod_year == 1 %} disabled {% endif %}>2nd Year</option>
+                    <option value="3" {% if hod_year == 1 %} disabled {% endif %}>3rd Year</option>
+                    <option value="4" {% if hod_year == 1 %} disabled {% endif %}>4th Year</option>
+                </select>
+                <button type="submit" >OK</button>
+                <a href="{{ url_for('hod.hod_dashboard')}}">← Back</a>
+            </div>
+        </div>
+    </form>
+
+<div class="layout">
+    <main class="content">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h2>Attendance Report</h2>
+            <p>Class wise attendance overview</p>
+        </div>
+
+        <!-- CLASS DETAILS CARD -->
+        <div class="card class-info">
+            <h3>{{ department }} – {{ year }} Year</h3>
+            <p>Total Students : {{ total_students }}</p>
+            <p>Semester : {{ semester }}</p>
+        </div>
+
+        <div class="progress-section">
+
+        {%if semester_percentage %}    
+            <div class="progress-card">
+                <p class="progress-title">Semester Attendance</p>
+                <div class="progress-bar">
+                    <div class="progress-fill 
+                        {% if semester_percentage >= 75 %}
+                            good
+                        {% elif semester_percentage >= 60 %}
+                            warning
+                        {% else %}
+                            danger
+                        {% endif %}
+                    " style="width: {{ sem_percentage }}%;">
+                        {{ semester_percentage }}%
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="bar" >No Semester Attendance Data</p>
+        {% endif %}
+        {% if today_percentage %}
+            <div class="progress-card">
+                <p class="progress-title">Today Attendance</p>
+                <div class="progress-bar">
+                    <div class="progress-fill 
+                        {% if today_percentage >= 75 %}
+                            good
+                        {% elif today_percentage >= 60 %}
+                            warning
+                        {% else %}
+                            danger
+                        {% endif %}
+                    " style="width: {{ today_percentage }}%;">
+                        {{ today_percentage }}%
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class ='bar'>No Today Attendance Data</p>
+        {% endif %}
+        </div>
+
+        <!-- TODAY ABSENT LIST -->
+        <div class="card absent-card">
+            <h3>Today Absent Students</h3>
+            {% if absent %}
+                {% for reg_no, name in absent.items() %}
+                    <ul class="absent-list">
+                        <li>{{ reg_no }} - {{ name }}</li>
+                    </ul>
+                {% endfor %}
+            {% elif today in ('Sunday', 'Saturday') %}
+                    <p class="ab" >Holiday</p>
+            {% else %}
+                    <p class="pre" >Today All Students Are Present</p>
+            {% endif %}
+            <p class="note">Total Absent : {{ total_absent }}</p>
+        </div>
+
+        <div class="btn">
+            <a href="{{ url_for('hod.hod_dashboard')}}">← Back</a>
+            <a href="{{ url_for('hod.attendance_report')}}">← Change Year</a>
+        </div>
+    </main>
+</div>
+
+<script>
+function closeModal() {
+    document.getElementById("yearModal").style.display = "none";
+}
+</script>
+
+</body>
+</html>
