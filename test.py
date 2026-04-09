@@ -1,18 +1,19 @@
 import os
 import mysql.connector
 
-def get_db_connection():
-    return mysql.connector.connect(
-        # Railway-la kudukura Environment Variables
-        host=os.getenv("MYSQLHOST", "mysql.railway.internal"),
-        user=os.getenv("MYSQLUSER", "root"),
-        password=os.getenv("MYSQLPASSWORD", "RlZHCZODSwjoBzETSCeVAWQMrtYJWPiV"),
-        database=os.getenv("MYSQLDATABASE", "railway"),
-        port=os.getenv("MYSQLPORT", 3306)
-    )
+try:
+    conn = mysql.connector.connect(
+            # Using the external proxy host and port from your dashboard image
+            host=os.getenv("MYSQLHOST", "mainline.proxy.rlwy.net"),
+            user=os.getenv("MYSQLUSER", "root"),
+            password=os.getenv("MYSQLPASSWORD", "RlZHCZODSwjoBzETSCeVAWQMrtYJWPiV"),
+            database=os.getenv("MYSQLDATABASE", "railway"),
+            port=int(os.getenv("MYSQLPORT", 57245)) 
+        )
 
-
-
+except mysql.connector.Error as err:
+    print(f"Database Connection Error: {err}")
+    
 cursor = conn.cursor()
 
 # STUDENTS
