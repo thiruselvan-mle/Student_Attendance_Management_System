@@ -1,3 +1,5 @@
+from functools import cache
+
 from database.db_connection import get_db_connection
 
 def admin_table(admin_id):
@@ -477,45 +479,43 @@ def update_std_year_sem(register_no, year, semester):
         cursor.close()
         conn.close()
 
-def get_sem_duration(department, year, semester):
+def get_sem_duration(year, semester):
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(dictionary=True, buffered=True) 
     try:
-        cursor.execute("""
-            SELECT start_date, end_date
-            FROM semester_master
-            WHERE department=%s AND year=%s AND semester=%s
-        """, (department, year, semester))
-        return cursor.fetchone()
+        cursor.execute("SELECT start_date, end_date FROM semester_master WHERE year=%s AND semester=%s", (year, semester))
+        result = cursor.fetchone()
+        while cursor.nextset():
+            pass
+        return result
     finally:
         cursor.close()
         conn.close()
 
-
-def update_sem_duration(department, year, semester, start_date, end_date):
+def update_sem_duration(year, semester, start_date, end_date):
     conn = get_db_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("""
-            UPDATE semester_master
-            SET start_date=%s, end_date=%s
-            WHERE department=%s AND year=%s AND semester=%s
-        """, (start_date, end_date, department, year, semester))
+        cursor.execute("UPDATE semester_master SET start_date=%s, end_date=%s WHERE year=%s AND semester=%s", (start_date, end_date, year, semester))
         conn.commit()
     finally:
         cursor.close()
         conn.close()
 
-def insert_sem_duration(department, year, semester, start_date, end_date):
+def insert_sem_duration(year, semester, start_date, end_date):
     conn = get_db_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True, buffered=True) 
     try:
-        cursor.execute("""
-            INSERT INTO semester_master
-            (department, year, semester, start_date, end_date)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (department, year, semester, start_date, end_date))
+        cursor.execute("SELECT department_name FROM department")
+        depts = cursor.fetchall()
+        query = "INSERT INTO semester_master (year, semester, start_date, end_date, department) VALUES (%s, %s, %s, %s, %s)"
+        for dept in depts:
+            dept_name = dept['department_name'].strip().lower()
+            cursor.execute(query, (year, semester, start_date, end_date, dept_name))
         conn.commit()
+    except Exception as e:
+        print(f"Error during bulk insert: {e}")
+        conn.rollback()
     finally:
         cursor.close()
         conn.close()
