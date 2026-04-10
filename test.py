@@ -232,9 +232,12 @@ cursor = conn.cursor()
 # );
 # """)
 
-# cursor.execute("""insert into admin (admin_id, name, phone, email, password) values ('ad001', 'Admin User', '1234567890', 'admin@example.com', 'password123')""")
+cursor.execute("""
+ALTER TABLE hod ADD COLUMN start_year INT NOT NULL DEFAULT 2, ADD COLUMN end_year INT NOT NULL DEFAULT 4;
+
+""")
 
 
-# conn.commit()
-# cursor.close()
-# conn.close()
+conn.commit()
+cursor.close()
+conn.close()
